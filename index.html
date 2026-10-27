@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <!-- 모바일 기기에서도 화면 비율이 정상적으로 유지되도록 뷰포트를 설정합니다 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WANDERLUST - 당신만의 특별한 여행을 시작하세요</title>
+
+  <!-- [웹폰트] 눈이 편안하고 모던한 Pretendard 폰트 불러오기 -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+
+  <!-- [아이콘] 다양하고 깔끔한 아이콘을 제공하는 Font Awesome 6.5.1 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- [애니메이션 라이브러리] 화면 스크롤 시 부드럽게 요소가 떠오르는 AOS 라이브러리 CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+  <style>
+    /* ============================================================
+       1. 디자인 시스템 & CSS 변수 정의
+       - 사이트 전반에서 공통으로 사용할 색상, 글꼴, 그림자 값을 정의합니다.
+       ============================================================ */
+    :root {
+      --primary-color: #06b6d4;       /* 생동감 넘치는 청록색(Cyan) 포인트 컬러 */
+      --primary-hover: #0891b2;       /* 포인트 컬러 마우스 호버 색상 */
+      --secondary-color: #3b82f6;     /* 신뢰감을 주는 블루 컬러 */
+      --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 100%); /* 세련된 그라디언트 */
+      
+      --bg-dark: #090d16;             /* 메인 배경색: 깊고 세련된 다크 블루 */
+      --bg-card: rgba(22, 29, 47, 0.7); /* 글래스모피즘(유리 느낌) 반투명 카드 배경색 */
+      --bg-card-hover: rgba(30, 41, 65, 0.85); /* 카드 호버 시 배경색 */
+      
+      --text-main: #f8fafc;           /* 가장 밝은 텍스트 (제목, 메인) */
+      --text-muted: #94a3b8;          /* 은은한 보조 텍스트 (설명문) */
+      --border-glass: rgba(255, 255, 255, 0.1); /* 얇고 세련된 유리 테두리선 */
+      
+      --font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 부드러운 애니메이션 전환 속도 */
+      --border-radius: 20px;          /* 둥글고 모던한 모서리 굴곡 */
+    }
+
+    /* 기본 여백 초기화 및 부드러운 스크롤 적용 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth; /* 링크 클릭 시 화면이 뚝뚝 끊기지 않고 부드럽게 이동 */
+      font-family: var(--font-family);
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden; /* 가로 스크롤 방지 */
+    }
+
+    body {
+      line-height: 1.6;
+      background: radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%),
+                  var(--bg-dark);
+      min-height: 100vh;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    /* 공통 컨테이너: 화면 중앙 정렬 및 최대 너비 제한 */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ============================================================
+       2. 상단 네비게이션 바 (Header & Navbar)
+       - 글래스모피즘(배경 블러) 효과를 주어 세련된 느낌을 제공합니다.
+       ============================================================ */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      padding: 20px 0;
+      transition: var(--transition);
+      background: rgba(9, 13, 22, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    /* 스크롤 시 헤더가 약간 축소되며 배경이 더 짙어집니다 */
+    .header.scrolled {
+      padding: 14px 0;
+      background: rgba(9, 13, 22, 0.85);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* 로고 스타일링 */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .logo i {
+      color: var(--primary-color);
+      font-size: 1.6rem;
+      transition: var(--transition);
+    }
+
+    .logo:hover i {
+      transform: rotate(20deg) scale(1.1);
+    }
+
+    /* 데스크톱 메뉴 링크 */
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-link {
+      font-size: 0.98rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: var(--transition);
+      position: relative;
+      padding: 6px 0;
+    }
+
+    /* 메뉴 호버 시 아래쪽에 예쁜 밑줄 효과 */
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-gradient);
+      transition: var(--transition);
+      border-radius: 2px;
+    }
+
+    .nav-link:hover {
+      color: #fff;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* 상단 오른쪽 '여행 시작하기' 버튼 */
+    .btn-header {
+      padding: 10px 24px;
+      background: var(--accent-gradient);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 30px;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+      display: inline-block;
+    }
+
+    .btn-header:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+    }
+
+    /* 모바일 햄버거 토글 버튼 (화면이 작아질 때만 보임) */
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ============================================================
+       3. 메인 히어로 섹션 (Hero Section) & '여행.mp4' 비디오 중앙 배치
+       - 비디오가 반응형으로 화면 크기에 맞게 조절되며, 왜곡 없이 출력됩니다.
+       ============================================================ */
+    .hero-section {
+      padding: 160px 0 100px;
+      text-align: center;
+      position: relative;
+    }
+
+    /* 상단 감성 뱃지 */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: 50px;
+      color: var(--primary-color);
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* 메인 타이틀 (그라디언트 텍스트) */
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+
+    .gradient-text {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 40px;
+      font-weight: 400;
+    }
+
+    /* ------------------------------------------------------------
+       [핵심!] '여행.mp4' 비디오 컨테이너 스타일링
+       - aspect-ratio: 16 / 9 를 통해 모바일에서도 항상 16:9 비율 유지
+       - object-fit: cover 로 비율 왜곡 없이 화면에 가득 차게 렌더링
+       - 박스 쉐도우와 네온 발광으로 메인 화면 중앙의 몰입감 극대화
+       ------------------------------------------------------------ */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      border-radius: var(--border-radius);
+      padding: 8px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(6, 182, 212, 0.4), rgba(59, 130, 246, 0.1));
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7),
+                  0 0 30px rgba(6, 182, 212, 0.25); /* 비디오 주위 은은한 네온 발광 */
+      transition: var(--transition);
+    }
+
+    .video-wrapper:hover {
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8),
+                  0 0 45px rgba(6, 182, 212, 0.4);
+      transform: translateY(-4px);
+    }
+
+    .video-container {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9; /* 최신 표준 비율 속성: 16:9 고정 유지 */
+      border-radius: calc(var(--border-radius) - 6px);
+      overflow: hidden;
+      background-color: #000;
+    }
+
+    .main-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 화면 크기에 맞추어 비디오가 늘어나거나 찌그러지지 않고 자연스럽게 채움 */
+      display: block;
+    }
+
+    /* 비디오 위에 띄우는 소리 켜기/끄기 편의 컨트롤 버튼 */
+    .sound-toggle-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(9, 13, 22, 0.75);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      z-index: 10;
+    }
+
+    .sound-toggle-btn:hover {
+      background: rgba(6, 182, 212, 0.9);
+      color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* 히어로 섹션 아래의 CTA 버튼들 */
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 48px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(6, 182, 212, 0.6);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      border: 1px solid var(--border-glass);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-3px);
+    }
+
+    /* ============================================================
+       4. 공통 섹션 헤더 스타일 (제목 및 서브타이틀)
+       ============================================================ */
+    .section-padding {
+      padding: 100px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 650px;
+      margin: 0 auto 60px;
+    }
+
+    .section-subtitle {
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--primary-color);
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* ============================================================
+       5. 추천 여행지 섹션 (Featured Destinations)
+       - 감각적인 카드 그리드와 호버 줌 효과
+       ============================================================ */
+    .dest-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 30px;
+    }
+
+    .dest-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dest-card:hover {
+      transform: translateY(-8px);
+      background: var(--bg-card-hover);
+      border-color: rgba(6, 182, 212, 0.3);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(6, 182, 212, 0.15);
+    }
+
+    .card-img-box {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .dest-card:hover .card-img {
+      transform: scale(1.08); /* 마우스 올렸을 때 이미지 부드럽게 확대 */
+    }
+
+    /* 카드 위 뱃지 (인기, 힐링 등) */
+    .card-tag {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(9, 13, 22, 0.7);
+      backdrop-filter: blur(6px);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid var(--border-glass);
+    }
+
+    .card-rating {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      color: #facc15;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-content {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .card-location {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-location i {
+      color: var(--primary-color);
+    }
+
+    .card-text {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-glass);
+      padding-top: 16px;
+    }
+
+    .card-price {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--primary-color);
+    }
+
+    .card-price span {
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .btn-detail {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+
+    .btn-detail:hover {
+      background: var(--accent-gradient);
+    }
+
+    /* ============================================================
+       6. 여행 테마 섹션 (Travel Styles)
+       - 다양한 여행 스타일을 직관적으로 보여주는 카드
+       ============================================================ */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .theme-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--border-radius);
+      padding: 36px 24px;
+      text-align: center;
+      transition: var(--transition);
+      backdrop-filter: blur(10px);
+    }
+
+    .theme-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(6, 182, 212, 0.4);
+      background: var(--bg-card-hover);
+    }
+
+    .theme-icon-box {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 24px;
+      border-radius: 50%;
+      background: rgba(6, 182, 212, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      transition: var(--transition);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .theme-card:hover .theme-icon-box {
+      background: var(--accent-gradient);
+      color: #fff;
+      transform: rotateY(180deg);
+    }
+
+    .theme-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .theme-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       7. 통계 & 하이라이트 섹션 (Stats & Highlights)
+       - 브랜드의 신뢰도를 높여주는 성과 지표
+       ============================================================ */
+    .stats-section {
+      background: linear-gradient(180deg, transparent, rgba(6, 182, 212, 0.05), transparent);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      text-align: center;
+    }
+
+    .stat-item {
+      padding: 30px 20px;
+      border-radius: var(--border-radius);
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      transition: var(--transition);
+    }
+
+    .stat-item:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-4px);
+    }
+
+    .stat-number {
+      font-size: 2.6rem;
+      font-weight: 900;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       8. 감성적인 CTA 배너 섹션 (Newsletter / Action)
+       ============================================================ */
+    .cta-banner {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2)), var(--bg-card);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: var(--border-radius);
+      padding: 60px 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin-top: 40px;
+    }
+
+    .cta-title {
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .cta-desc {
+      color: var(--text-muted);
+      max-width: 550px;
+      margin: 0 auto 30px;
+      font-size: 1rem;
+    }
+
+    /* ============================================================
+       9. 푸터 (Footer) & 상단 이동 플로팅 버튼
+       ============================================================ */
+    .footer {
+      background: #05080f;
+      border-top: 1px solid var(--border-glass);
+      padding: 60px 0 30px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 16px;
+    }
+
+    .social-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+
+    .social-btn:hover {
+      background: var(--accent-gradient);
+      color: #fff;
+      transform: translateY(-3px);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 30px;
+      font-size: 0.85rem;
+    }
+
+    /* 맨 위로 가기 플로팅 버튼 */
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--accent-gradient);
+      color: #fff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      z-index: 99;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+    }
+
+    .back-to-top.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(6, 182, 212, 0.6);
+    }
+
+    /* ============================================================
+       10. 모바일 반응형 미디어 쿼리 (Media Queries)
+       - 스마트폰 및 태블릿에서도 깨짐 없는 유연한 레이아웃 보장
+       ============================================================ */
+    @media (max-width: 900px) {
+      .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background: rgba(9, 13, 22, 0.98);
+        backdrop-filter: blur(16px);
+        flex-direction: column;
+        justify-content: center;
+        gap: 28px;
+        transition: 0.4s ease;
+      }
+
+      .nav-menu.active {
+        left: 0;
+      }
+
+      .mobile-toggle {
+        display: block;
+      }
+
+      .btn-header {
+        display: none;
+      }
+
+      .hero-section {
+        padding: 130px 0 70px;
+      }
+
+      .video-wrapper {
+        padding: 5px;
+      }
+
+      .sound-toggle-btn {
+        bottom: 12px;
+        right: 12px;
+        padding: 8px 12px;
+        font-size: 0.78rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .section-padding {
+        padding: 70px 0;
+      }
+
+      .cta-banner {
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       상단 네비게이션 헤더 (Header / Navbar)
+       ============================================================ -->
+  <header class="header" id="header">
+    <div class="container nav-container">
+      <a href="#" class="logo">
+        <i class="fa-solid fa-compass"></i>
+        <span>WANDERLUST</span>
+      </a>
+
+      <!-- 데스크톱 & 모바일 메뉴 네비게이션 -->
+      <nav>
+        <ul class="nav-menu" id="navMenu">
+          <li><a href="#hero" class="nav-link">홈</a></li>
+          <li><a href="#destinations" class="nav-link">추천 여행지</a></li>
+          <li><a href="#themes" class="nav-link">여행 테마</a></li>
+          <li><a href="#stats" class="nav-link">왜 원더러스트인가</a></li>
+          <li><a href="#cta" class="nav-link">여행 문의</a></li>
+        </ul>
+      </nav>
+
+      <a href="#destinations" class="btn-header">
+        <span>지금 떠나기</span>
+      </a>
+
+      <!-- 모바일용 햄버거 토글 버튼 -->
+      <button class="mobile-toggle" id="mobileToggle" aria-label="메뉴 열기">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       메인 히어로 섹션 (Hero Section) & '여행.mp4' 비디오 배치
+       ============================================================ -->
+  <section class="hero-section" id="hero">
+    <div class="container">
+      <!-- 상단 감성 뱃지 -->
+      <div class="badge" data-aos="fade-down" data-aos-duration="800">
+        <i class="fa-solid fa-sparkles"></i>
+        <span>2026 트렌디 여행 가이드</span>
+      </div>
+
+      <!-- 메인 카피 타이틀 -->
+      <h1 class="hero-title" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
+        세상은 넓고,<br>
+        당신이 만날 <span class="gradient-text">경이로운 여정</span>이 시작됩니다
+      </h1>
+
+      <!-- 서브 카피 -->
+      <p class="hero-desc" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+        답답한 일상에서 벗어나 가슴 뛰는 순간을 기록해보세요.<br>
+        숨막히는 자연 경관부터 이국적인 도심까지, 가장 완벽한 여행을 안내해 드립니다.
+      </p>
+
+      <!-- 
+        [중요!] '여행.mp4' 중앙 메인 비디오 플레이어
+        - autoplay : 페이지 로드 시 자동 재생
+        - loop : 비디오가 끝나면 무한 반복 재생
+        - muted : 모바일/브라우저 정책상 자동재생을 위한 필수 음소거
+        - playsinline : 모바일(아이폰/안드로이드)에서 전체화면으로 튕기지 않고 화면 안에서 재생
+      -->
+      <div class="video-wrapper" data-aos="zoom-in" data-aos-duration="1200" data-aos-delay="300">
+        <div class="video-container">
+          <video 
+            class="main-video" 
+            id="travelVideo"
+            autoplay 
+            loop 
+            muted 
+            playsinline
+          >
+            <!-- 프로젝트 폴더에 위치한 '여행.mp4' 파일을 소스로 지정합니다 -->
+            <source src="여행.mp4" type="video/mp4">
+            브라우저가 비디오 태그를 지원하지 않습니다.
+          </video>
+
+          <!-- 소리 ON/OFF 토글 편의 버튼 -->
+          <button class="sound-toggle-btn" id="soundToggleBtn" aria-label="소리 켜기/끄기">
+            <i class="fa-solid fa-volume-xmark" id="soundIcon"></i>
+            <span id="soundText">소리 켜기</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 히어로 액션 버튼들 -->
+      <div class="hero-actions" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+        <a href="#destinations" class="btn btn-primary">
+          <i class="fa-solid fa-compass"></i>
+          <span>인기 여행지 탐색하기</span>
+        </a>
+        <a href="#themes" class="btn btn-secondary">
+          <i class="fa-solid fa-film"></i>
+          <span>여행 테마 둘러보기</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       추천 여행지 섹션 (Featured Destinations)
+       ============================================================ -->
+  <section class="section-padding" id="destinations">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-subtitle">Featured Destinations</span>
+        <h2 class="section-title">가장 많은 사랑을 받은 <span class="gradient-text">베스트 여행지</span></h2>
+        <p class="section-desc">여행자들이 극찬한 전 세계의 숨은 명소와 인기 핫플레이스를 만나보세요.</p>
+      </div>
+
+      <!-- 여행지 카드 그리드 (반응형 4분할 레이아웃) -->
+      <div class="dest-grid">
+        <!-- 여행지 1: 스위스 알프스 -->
+        <article class="dest-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="card-img-box">
+            <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800&auto=format&fit=crop" alt="스위스 알프스" class="card-img" loading="lazy">
+            <span class="card-tag">자연 & 힐링</span>
+            <div class="card-rating"><i class="fa-solid fa-star"></i> 4.9</div>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">인터라켄 & 알프스</h3>
+            <p class="card-location"><i class="fa-solid fa-location-dot"></i> 스위스, 인터라켄</p>
+            <p class="card-text">눈부신 만년설과 푸른 초원이 펼쳐진 동화 같은 풍경 속에서 진정한 휴식을 누려보세요.</p>
+            <div class="card-footer">
+              <div class="card-price">₩1,850,000~ <span>/ 패키지</span></div>
+              <a href="#cta" class="btn-detail">일정 보기</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 여행지 2: 인도네시아 발리 -->
+        <article class="dest-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="card-img-box">
+            <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?q=80&w=800&auto=format&fit=crop" alt="발리 우붓" class="card-img" loading="lazy">
+            <span class="card-tag">휴양 & 리조트</span>
+            <div class="card-rating"><i class="fa-solid fa-star"></i> 4.8</div>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">발리 우붓 & 짱구</h3>
+            <p class="card-location"><i class="fa-solid fa-location-dot"></i> 인도네시아, 발리</p>
+            <p class="card-text">에메랄드빛 바다와 정글 속 풀빌라, 일몰과 함께 즐기는 요가로 몸과 마음을 정화하세요.</p>
+            <div class="card-footer">
+              <div class="card-price">₩980,000~ <span>/ 패키지</span></div>
+              <a href="#cta" class="btn-detail">일정 보기</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 여행지 3: 프랑스 파리 -->
+        <article class="dest-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="card-img-box">
+            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop" alt="프랑스 파리" class="card-img" loading="lazy">
+            <span class="card-tag">낭만 & 예술</span>
+            <div class="card-rating"><i class="fa-solid fa-star"></i> 4.9</div>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">파리의 낭만과 예술</h3>
+            <p class="card-location"><i class="fa-solid fa-location-dot"></i> 프랑스, 파리</p>
+            <p class="card-text">에펠탑의 반짝이는 야경과 루브르의 예술, 센 강변을 거니는 로맨틱한 파리 산책입니다.</p>
+            <div class="card-footer">
+              <div class="card-price">₩1,620,000~ <span>/ 패키지</span></div>
+              <a href="#cta" class="btn-detail">일정 보기</a>
+            </div>
+          </div>
+        </article>
+
+        <!-- 여행지 4: 일본 교토 -->
+        <article class="dest-card" data-aos="fade-up" data-aos-delay="400">
+          <div class="card-img-box">
+            <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=800&auto=format&fit=crop" alt="일본 교토" class="card-img" loading="lazy">
+            <span class="card-tag">고즈넉한 감성</span>
+            <div class="card-rating"><i class="fa-solid fa-star"></i> 4.7</div>
+          </div>
+          <div class="card-content">
+            <h3 class="card-title">교토 아라시야마</h3>
+            <p class="card-location"><i class="fa-solid fa-location-dot"></i> 일본, 교토</p>
+            <p class="card-text">울창한 대나무 숲길과 천년 역사의 고즈넉한 사찰에서 사색과 평온을 경험해보세요.</p>
+            <div class="card-footer">
+              <div class="card-price">₩550,000~ <span>/ 패키지</span></div>
+              <a href="#cta" class="btn-detail">일정 보기</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       여행 테마 섹션 (Travel Themes)
+       ============================================================ -->
+  <section class="section-padding" id="themes" style="background: rgba(255,255,255,0.01);">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <span class="section-subtitle">Travel Styles</span>
+        <h2 class="section-title">당신이 꿈꾸는 <span class="gradient-text">여행 스타일</span>은?</h2>
+        <p class="section-desc">취향과 목적에 맞는 다채로운 테마 여행으로 특별한 추억을 만들어드립니다.</p>
+      </div>
+
+      <div class="theme-grid">
+        <!-- 테마 1: 힐링 & 휴양 -->
+        <div class="theme-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="theme-icon-box">
+            <i class="fa-solid fa-umbrella-beach"></i>
+          </div>
+          <h3 class="theme-title">힐링 & 웰니스</h3>
+          <p class="theme-desc">바쁜 일상을 잠시 멈추고 고요한 바다와 숲에서 온전한 쉼을 누리는 여행입니다.</p>
+        </div>
+
+        <!-- 테마 2: 익스트림 액티비티 -->
+        <div class="theme-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="theme-icon-box">
+            <i class="fa-solid fa-mountain-sun"></i>
+          </div>
+          <h3 class="theme-title">자연 & 어드벤처</h3>
+          <p class="theme-desc">트레킹, 서핑, 스카이다이빙 등 자연의 경이로움에 도전하는 짜릿한 모험입니다.</p>
+        </div>
+
+        <!-- 테마 3: 미식 & 와인 -->
+        <div class="theme-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="theme-icon-box">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <h3 class="theme-title">로컬 미식 투어</h3>
+          <p class="theme-desc">현지인의 골목 맛집부터 미슐랭 다이닝까지 미각을 깨우는 맛있는 탐방입니다.</p>
+        </div>
+
+        <!-- 테마 4: 문화 & 건축 -->
+        <div class="theme-card" data-aos="fade-up" data-aos-delay="400">
+          <div class="theme-icon-box">
+            <i class="fa-solid fa-landmark"></i>
+          </div>
+          <h3 class="theme-title">문화 & 예술 기행</h3>
+          <p class="theme-desc">세계적인 미술관과 역사적 유적지를 깊이 있게 이해하는 인문학적 여행입니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       통계 및 성과 섹션 (Stats Section)
+       ============================================================ -->
+  <section class="section-padding stats-section" id="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <!-- 통계 1 -->
+        <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
+          <div class="stat-number">120+</div>
+          <div class="stat-label">탐험 가능한 국가</div>
+        </div>
+        <!-- 통계 2 -->
+        <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
+          <div class="stat-number">25,000+</div>
+          <div class="stat-label">함께한 여행자 수</div>
+        </div>
+        <!-- 통계 3 -->
+        <div class="stat-item" data-aos="zoom-in" data-aos-delay="300">
+          <div class="stat-number">99.2%</div>
+          <div class="stat-label">여행 만족도</div>
+        </div>
+        <!-- 통계 4 -->
+        <div class="stat-item" data-aos="zoom-in" data-aos-delay="400">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">현지 실시간 케어</div>
+        </div>
+      </div>
+
+      <!-- 감성 CTA 배너 -->
+      <div class="cta-banner" id="cta" data-aos="fade-up" data-aos-delay="200">
+        <h2 class="cta-title">어디로 떠나야 할지 고민되시나요?</h2>
+        <p class="cta-desc">전문 여행 플래너가 당신의 취향과 일정에 딱 맞는 1:1 맞춤형 여행 코스를 무료로 설계해 드립니다.</p>
+        <a href="mailto:contact@wanderlust.travel" class="btn btn-primary">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span>무료 맞춤 코스 상담받기</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       하단 푸터 (Footer)
+       ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="logo" style="margin-bottom: 12px;">
+            <i class="fa-solid fa-compass"></i>
+            <span>WANDERLUST</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">당신의 모든 순간이 여행이 되는 곳, 원더러스트와 함께하세요.</p>
+        </div>
+
+        <!-- 소셜 미디어 링크 -->
+        <div class="social-links">
+          <a href="#" class="social-btn" aria-label="인스타그램"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-btn" aria-label="유튜브"><i class="fa-brands fa-youtube"></i></a>
+          <a href="#" class="social-btn" aria-label="페이스북"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="social-btn" aria-label="카카오톡"><i class="fa-solid fa-comment"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 WANDERLUST Travel Co. All rights reserved. Designed with modern web standards.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 맨 위로 가기 플로팅 버튼 -->
+  <button class="back-to-top" id="backToTop" aria-label="맨 위로 가기">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <!-- ============================================================
+       [자바스크립트 라이브러리 및 인터랙션 스크립트]
+       ============================================================ -->
+  <!-- 스크롤 시 부드러운 애니메이션 효과를 부여하는 AOS 라이브러리 JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+  <script>
+    /* ============================================================
+       1. AOS (Animate On Scroll) 애니메이션 라이브러리 초기화
+       - 화면을 스크롤할 때 각 요소가 자연스럽게 나타나도록 설정합니다.
+       ============================================================ */
+    AOS.init({
+      duration: 800,      // 애니메이션 지속 시간 (0.8초)
+      once: false,        // 스크롤을 올렸다 내릴 때마다 반복해서 동작할지 여부 (부드러운 경험을 위해 false 설정)
+      offset: 60,         // 요소가 화면에 보이기 시작하는 감지 기준 거리
+      easing: 'ease-out-cubic' // 부드럽게 감속하는 자연스러운 움직임 곡선
+    });
+
+    /* ============================================================
+       2. 상단 네비게이션 헤더 스크롤 감지 이벤트
+       - 사용자가 50px 이상 아래로 스크롤하면 헤더 배경을 더 짙게 만들고 그림자를 부여합니다.
+       ============================================================ */
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    /* ============================================================
+       3. 모바일 반응형 햄버거 메뉴 토글 로직
+       - 모바일 화면에서 우측 햄버거 버튼을 누르면 메뉴가 펼쳐지고 닫힙니다.
+       ============================================================ */
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navMenu = document.getElementById('navMenu');
+    const toggleIcon = mobileToggle.querySelector('i');
+
+    mobileToggle.addEventListener('click', () => {
+      navMenu.classList.toggle('active');
+      // 메뉴 열림/닫힘에 따라 아이콘을 햄버거(bars) 또는 X(xmark)로 교체합니다
+      if (navMenu.classList.contains('active')) {
+        toggleIcon.classList.remove('fa-bars');
+        toggleIcon.classList.add('fa-xmark');
+      } else {
+        toggleIcon.classList.remove('fa-xmark');
+        toggleIcon.classList.add('fa-bars');
+      }
+    });
+
+    // 메뉴 항목을 클릭하면 모바일 메뉴가 자동으로 닫히도록 처리
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        toggleIcon.classList.remove('fa-xmark');
+        toggleIcon.classList.add('fa-bars');
+      });
+    });
+
+    /* ============================================================
+       4. '여행.mp4' 비디오 음소거(Mute) 해제 및 활성화 토글 로직
+       - 브라우저 정책상 자동재생을 위해 처음에 음소거(muted)로 시작하지만,
+       - 사용자가 원할 때 언제든지 소리를 켜거나 끌 수 있습니다.
+       ============================================================ */
+    const travelVideo = document.getElementById('travelVideo');
+    const soundToggleBtn = document.getElementById('soundToggleBtn');
+    const soundIcon = document.getElementById('soundIcon');
+    const soundText = document.getElementById('soundText');
+
+    soundToggleBtn.addEventListener('click', () => {
+      if (travelVideo.muted) {
+        travelVideo.muted = false; // 소리 켜기
+        soundIcon.classList.remove('fa-volume-xmark');
+        soundIcon.classList.add('fa-volume-high');
+        soundText.textContent = '소리 끄기';
+      } else {
+        travelVideo.muted = true; // 소리 끄기(음소거)
+        soundIcon.classList.remove('fa-volume-high');
+        soundIcon.classList.add('fa-volume-xmark');
+        soundText.textContent = '소리 켜기';
+      }
+    });
+
+    /* ============================================================
+       5. 맨 위로 가기 (Top) 플로팅 버튼 동작
+       - 사용자가 300px 이상 스크롤하면 버튼이 나타나고, 클릭 시 최상단으로 이동합니다.
+       ============================================================ */
+    const backToTopBtn = document.getElementById('backToTop');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add('active');
+      } else {
+        backToTopBtn.classList.remove('active');
+      }
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  </script>
+</body>
+</html>
+
